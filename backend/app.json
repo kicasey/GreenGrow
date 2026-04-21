@@ -1,0 +1,8 @@
+{
+  "name": "GreenGrow API",
+  "description": "MIS 330 group project backend (ASP.NET Core 8 + EF Core + MySQL).",
+  "addons": ["jawsdb:kitefin"],
+  "buildpacks": [
+    { "url": "https://github.com/jincod/dotnetcore-buildpack" }
+  ]
+}
