@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useAuth } from "../state/AuthContext";
+import Icon from "../components/Icon";
 
 export default function LoginPage() {
   const { setCurrent } = useAuth();
@@ -31,6 +32,7 @@ export default function LoginPage() {
           lname: res.lname,
           email: res.email,
         });
+        nav("/products");
       } else {
         const res = await api.post<{
           employeeID: number; fname: string; lname: string; jobPosition: string;
@@ -42,8 +44,8 @@ export default function LoginPage() {
           lname: res.lname,
           jobPosition: res.jobPosition,
         });
+        nav("/dashboard");
       }
-      nav("/");
     } catch (err) {
       setError(String(err));
     } finally {
@@ -53,16 +55,23 @@ export default function LoginPage() {
 
   return (
     <section className="login">
-      <h2>Log In</h2>
-      <div className="tabs">
-        <button className={mode === "user" ? "active" : ""}     onClick={() => setMode("user")}>Customer</button>
-        <button className={mode === "employee" ? "active" : ""} onClick={() => setMode("employee")}>Employee</button>
+      <div style={{ display: "grid", placeItems: "center", marginBottom: "0.5rem" }}>
+        <span className="brand-mark" style={{ width: 48, height: 48, borderRadius: 12 }}>
+          <Icon name="leaf" size={28} />
+        </span>
+      </div>
+      <h2>Welcome to GreenGrow</h2>
+      <p className="subtitle">Sign in to continue to your garden.</p>
+
+      <div className="tabs" style={{ margin: "1rem auto 0" }}>
+        <button type="button" className={mode === "user" ? "active" : ""}     onClick={() => setMode("user")}>Customer</button>
+        <button type="button" className={mode === "employee" ? "active" : ""} onClick={() => setMode("employee")}>Employee</button>
       </div>
 
       <form onSubmit={submit} className="form">
         {mode === "user" ? (
           <label>Email
-            <input value={email} onChange={e => setEmail(e.target.value)} type="email" required />
+            <input value={email} onChange={e => setEmail(e.target.value)} type="email" required placeholder="you@example.com" />
           </label>
         ) : (
           <label>Employee ID
@@ -72,7 +81,9 @@ export default function LoginPage() {
         <label>Password
           <input value={password} onChange={e => setPassword(e.target.value)} type="password" required />
         </label>
-        <button type="submit" disabled={busy}>{busy ? "Signing in..." : "Sign in"}</button>
+        <button type="submit" disabled={busy}>
+          {busy ? "Signing in…" : mode === "user" ? "Sign in as customer" : "Sign in as employee"}
+        </button>
         {error && <p className="error">{error}</p>}
       </form>
 

@@ -4,3 +4,9 @@ dist/
 .env.local
 *.log
 .DS_Store
+
+# TypeScript build cache
+tsconfig.tsbuildinfo
+# Belt-and-suspenders: never commit compiled JS from src/
+src/**/*.js
+src/**/*.js.map

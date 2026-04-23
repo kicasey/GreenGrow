@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/client";
+import Icon from "../../components/Icon";
 import type { Employee } from "../../types";
 
 interface Draft {
@@ -72,25 +73,38 @@ export default function EmployeesAdmin() {
                onChange={e => setDraft({ ...draft, password: e.target.value })} />
         <input placeholder="Phones (comma separated)" value={draft.phones}
                onChange={e => setDraft({ ...draft, phones: e.target.value })} />
-        <button type="submit">{draft.employeeID === null ? "Add" : "Save"}</button>
-        {draft.employeeID !== null && <button type="button" onClick={() => setDraft(emptyDraft)}>Cancel</button>}
+        <button type="submit">
+          <Icon name={draft.employeeID === null ? "plus" : "check"} size={14} />{" "}
+          {draft.employeeID === null ? "Add employee" : "Save changes"}
+        </button>
+        {draft.employeeID !== null && (
+          <button type="button" className="secondary" onClick={() => setDraft(emptyDraft)}>Cancel</button>
+        )}
       </form>
 
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Phones</th><th></th></tr></thead>
-        <tbody>
-          {rows.map(e => (
-            <tr key={e.employeeID}>
-              <td>{e.employeeID}</td><td>{e.fname} {e.lname}</td>
-              <td>{e.jobPosition}</td><td>{e.phones.join(", ")}</td>
-              <td>
-                <button onClick={() => startEdit(e)}>Edit</button>{" "}
-                <button onClick={() => del(e.employeeID)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Phones</th><th></th></tr></thead>
+          <tbody>
+            {rows.map(e => (
+              <tr key={e.employeeID}>
+                <td>{e.employeeID}</td>
+                <td><strong>{e.fname} {e.lname}</strong></td>
+                <td className="muted">{e.jobPosition}</td>
+                <td className="muted">{e.phones.join(", ")}</td>
+                <td>
+                  <button className="icon-btn" onClick={() => startEdit(e)}>
+                    <Icon name="edit" size={14} /> Edit
+                  </button>{" "}
+                  <button className="danger" onClick={() => del(e.employeeID)}>
+                    <Icon name="trash" size={14} /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

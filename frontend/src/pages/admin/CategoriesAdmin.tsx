@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/client";
+import Icon from "../../components/Icon";
 import type { Category } from "../../types";
 
 export default function CategoriesAdmin() {
@@ -38,27 +39,36 @@ export default function CategoriesAdmin() {
       <form onSubmit={save} className="form form-row">
         <input placeholder="Category name" value={name}
                onChange={e => setName(e.target.value)} required />
-        <button type="submit">{editingId === null ? "Add" : "Save"}</button>
+        <button type="submit">
+          <Icon name={editingId === null ? "plus" : "check"} size={14} />{" "}
+          {editingId === null ? "Add category" : "Save changes"}
+        </button>
         {editingId !== null && (
-          <button type="button" onClick={() => { setEditingId(null); setName(""); }}>Cancel</button>
+          <button type="button" className="secondary" onClick={() => { setEditingId(null); setName(""); }}>Cancel</button>
         )}
       </form>
 
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th></th></tr></thead>
-        <tbody>
-          {rows.map(c => (
-            <tr key={c.categoryID}>
-              <td>{c.categoryID}</td>
-              <td>{c.categoryName}</td>
-              <td>
-                <button onClick={() => { setEditingId(c.categoryID); setName(c.categoryName); }}>Edit</button>{" "}
-                <button onClick={() => del(c.categoryID)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th></th></tr></thead>
+          <tbody>
+            {rows.map(c => (
+              <tr key={c.categoryID}>
+                <td>{c.categoryID}</td>
+                <td><strong>{c.categoryName}</strong></td>
+                <td>
+                  <button className="icon-btn" onClick={() => { setEditingId(c.categoryID); setName(c.categoryName); }}>
+                    <Icon name="edit" size={14} /> Edit
+                  </button>{" "}
+                  <button className="danger" onClick={() => del(c.categoryID)}>
+                    <Icon name="trash" size={14} /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

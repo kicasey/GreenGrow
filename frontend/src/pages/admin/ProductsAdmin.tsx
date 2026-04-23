@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/client";
+import Icon from "../../components/Icon";
 import type { Category, Product } from "../../types";
 
 interface Draft {
@@ -91,25 +92,38 @@ export default function ProductsAdmin() {
           <option value="">-- category --</option>
           {categories.map(c => <option key={c.categoryID} value={c.categoryID}>{c.categoryName}</option>)}
         </select>
-        <button type="submit">{draft.productID === null ? "Add" : "Save"}</button>
-        {draft.productID !== null && <button type="button" onClick={() => setDraft(emptyDraft)}>Cancel</button>}
+        <button type="submit">
+          <Icon name={draft.productID === null ? "plus" : "check"} size={14} />{" "}
+          {draft.productID === null ? "Add product" : "Save changes"}
+        </button>
+        {draft.productID !== null && (
+          <button type="button" className="secondary" onClick={() => setDraft(emptyDraft)}>Cancel</button>
+        )}
       </form>
 
-      <table>
-        <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Cost</th><th>Qty</th><th></th></tr></thead>
-        <tbody>
-          {products.map(p => (
-            <tr key={p.productID}>
-              <td>{p.productID}</td><td>{p.productName}</td>
-              <td>{p.categoryName}</td><td>${p.productCost.toFixed(2)}</td><td>{p.quantity}</td>
-              <td>
-                <button onClick={() => startEdit(p)}>Edit</button>{" "}
-                <button onClick={() => del(p.productID)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Cost</th><th>Qty</th><th></th></tr></thead>
+          <tbody>
+            {products.map(p => (
+              <tr key={p.productID}>
+                <td>{p.productID}</td><td><strong>{p.productName}</strong></td>
+                <td className="muted">{p.categoryName}</td>
+                <td>${p.productCost.toFixed(2)}</td>
+                <td>{p.quantity}</td>
+                <td>
+                  <button className="icon-btn" onClick={() => startEdit(p)}>
+                    <Icon name="edit" size={14} /> Edit
+                  </button>{" "}
+                  <button className="danger" onClick={() => del(p.productID)}>
+                    <Icon name="trash" size={14} /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
