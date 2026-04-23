@@ -12,7 +12,8 @@ interface Tile {
 const customerTiles: Tile[] = [
   { to: "/products", icon: "sprout", title: "Browse the garden",   blurb: "Shop plants, soil, seeds, and tools." },
   { to: "/cart",     icon: "cart",   title: "Your cart",           blurb: "Review items and check out." },
-  { to: "/orders",   icon: "receipt", title: "My orders",          blurb: "Track past purchases and confirmations." },
+  { to: "/orders",   icon: "receipt", title: "My orders",          blurb: "Track purchases and cancel within 24h." },
+  { to: "/profile",  icon: "edit",   title: "My profile",          blurb: "Update your name, emails, and phone numbers." },
 ];
 
 const employeeTiles: Tile[] = [

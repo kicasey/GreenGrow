@@ -86,11 +86,49 @@ public class OrdersController : ControllerBase
                     l.Quantity, l.LineTotal))));
     }
 
+    /// <summary>
+    /// Customer-initiated order cancellation. Only allowed if:
+    ///   - The order belongs to the user making the request (userId query param)
+    ///   - The order was placed less than 24 hours ago
+    /// Restores each product's stock by the quantity sold, then removes the
+    /// order. OrderContains rows cascade via EF relationship config.
+    /// </summary>
+    [HttpPost("{id:int}/cancel")]
+    public async Task<IActionResult> Cancel(int id, [FromQuery] int userId)
+    {
+        var order = await _db.Orders
+            .Include(o => o.Lines).ThenInclude(l => l.Product)
+            .FirstOrDefaultAsync(o => o.OrderID == id);
+        if (order is null) return NotFound();
+
+        if (order.UserID != userId)
+            return Forbid();
+
+        // OrderDate is stored in UTC (default current_timestamp at insert + UtcNow on Create).
+        var ageHours = (DateTime.UtcNow - order.OrderDate).TotalHours;
+        if (ageHours > 24)
+            return BadRequest("Orders can only be cancelled within 24 hours of being placed.");
+
+        foreach (var line in order.Lines)
+        {
+            if (line.Product is not null)
+                line.Product.Quantity += line.Quantity;
+        }
+
+        _db.OrderContains.RemoveRange(order.Lines);
+        _db.Orders.Remove(order);
+        await _db.SaveChangesAsync();
+        return NoContent();
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var o = await _db.Orders.FindAsync(id);
+        var o = await _db.Orders
+            .Include(x => x.Lines)
+            .FirstOrDefaultAsync(x => x.OrderID == id);
         if (o is null) return NotFound();
+        _db.OrderContains.RemoveRange(o.Lines);
         _db.Orders.Remove(o);
         await _db.SaveChangesAsync();
         return NoContent();

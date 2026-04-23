@@ -4,6 +4,7 @@ import type { AuthedUser } from "../types";
 interface AuthState {
   current: AuthedUser | null;
   setCurrent: (u: AuthedUser | null) => void;
+  updateCurrent: (patch: Partial<AuthedUser>) => void;
   logout: () => void;
   isEmployee: boolean;
   isCustomer: boolean;
@@ -42,6 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       current,
       setCurrent,
+      updateCurrent: (patch) =>
+        setCurrentState((prev) => (prev ? { ...prev, ...patch } : prev)),
       logout: () => setCurrentState(null),
       isEmployee: current?.kind === "employee",
       isCustomer: current?.kind === "user",

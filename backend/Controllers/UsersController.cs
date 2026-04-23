@@ -85,6 +85,53 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Customer-facing profile edit. Allows updating name, emails, and phone
+    /// numbers without requiring (or changing) the password. Re-returns the
+    /// updated user so the client can refresh cached display info.
+    /// </summary>
+    [HttpPut("{id:int}/profile")]
+    public async Task<ActionResult<UserDto>> UpdateProfile(int id, UserProfileUpdateDto dto)
+    {
+        var u = await _db.Users
+            .Include(x => x.Emails)
+            .Include(x => x.Phones)
+            .FirstOrDefaultAsync(x => x.UserID == id);
+        if (u is null) return NotFound();
+
+        if (string.IsNullOrWhiteSpace(dto.Fname) || string.IsNullOrWhiteSpace(dto.Lname))
+            return BadRequest("First and last name are required.");
+
+        u.Fname = dto.Fname.Trim();
+        u.Lname = dto.Lname.Trim();
+        if (!string.IsNullOrWhiteSpace(dto.Password))
+            u.Password = PasswordService.Hash(dto.Password);
+
+        // Replace the multi-valued attributes in one pass. Dedupe + trim so the
+        // composite PK on UserEmail/UserPhone doesn't blow up on duplicates.
+        var cleanEmails = (dto.Emails ?? Array.Empty<string>())
+            .Select(e => (e ?? string.Empty).Trim())
+            .Where(e => e.Length > 0)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var cleanPhones = (dto.Phones ?? Array.Empty<string>())
+            .Select(p => (p ?? string.Empty).Trim())
+            .Where(p => p.Length > 0)
+            .Distinct()
+            .ToList();
+
+        _db.UserEmails.RemoveRange(u.Emails);
+        _db.UserPhones.RemoveRange(u.Phones);
+        u.Emails = cleanEmails.Select(e => new UserEmail { Email = e, UserID = id }).ToList();
+        u.Phones = cleanPhones.Select(p => new UserPhone { PhoneNumber = p, UserID = id }).ToList();
+
+        await _db.SaveChangesAsync();
+
+        return new UserDto(u.UserID, u.Fname, u.Lname,
+            u.Emails.Select(e => e.Email),
+            u.Phones.Select(p => p.PhoneNumber));
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

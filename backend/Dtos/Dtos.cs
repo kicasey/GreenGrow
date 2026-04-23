@@ -36,6 +36,17 @@ public record UserCreateDto(
     IEnumerable<string>? Emails,
     IEnumerable<string>? Phones);
 
+/// <summary>
+/// Customer-initiated profile edit. Password is optional so the customer can
+/// update name/emails/phones without rotating their password.
+/// </summary>
+public record UserProfileUpdateDto(
+    string Fname,
+    string Lname,
+    string? Password,
+    IEnumerable<string>? Emails,
+    IEnumerable<string>? Phones);
+
 // ---- Employee ----
 public record EmployeeDto(
     int EmployeeID,

@@ -6,6 +6,7 @@ import AdminPage from "./pages/AdminPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import CartPage from "./pages/CartPage";
+import ProfilePage from "./pages/ProfilePage";
 import DashboardPage from "./pages/DashboardPage";
 import ReportsPage from "./pages/ReportsPage";
 import RequireRole from "./components/RequireRole";
@@ -41,6 +42,7 @@ export default function App() {
                 Cart{cartCount ? ` (${cartCount})` : ""}
               </NavLink>
               <NavLink to="/orders">My Orders</NavLink>
+              <NavLink to="/profile">My Profile</NavLink>
             </>
           )}
 
@@ -86,6 +88,14 @@ export default function App() {
             element={
               <RequireRole role="customer">
                 <CartPage />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <RequireRole role="customer">
+                <ProfilePage />
               </RequireRole>
             }
           />
