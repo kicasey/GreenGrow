@@ -57,3 +57,4 @@ nunit-*.xml
 # Keep only the .gitkeep so the folder exists in the repo.
 backend/wwwroot/*
 !backend/wwwroot/.gitkeep
+.claude/
