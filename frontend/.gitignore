@@ -4,3 +4,7 @@ dist/
 .env.local
 *.log
 .DS_Store
+
+# Stray JS output from accidentally running tsc without -b (TSX source is in .tsx).
+src/**/*.js
+tsconfig.tsbuildinfo

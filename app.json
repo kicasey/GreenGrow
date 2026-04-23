@@ -1,0 +1,19 @@
+{
+  "name": "GreenGrow",
+  "description": "MIS 330 group project: React + TypeScript frontend served by an ASP.NET Core 8 Web API with EF Core + MySQL (JawsDB).",
+  "addons": ["jawsdb:kitefin"],
+  "buildpacks": [
+    { "url": "heroku/nodejs" },
+    { "url": "https://github.com/jincod/dotnetcore-buildpack" }
+  ],
+  "env": {
+    "PROJECT_FILE": {
+      "description": "Path to the .NET project to build (the dotnetcore buildpack uses this to pick the backend project, not the stray root csproj).",
+      "value": "backend/GreenGrow.Api.csproj"
+    },
+    "ASPNETCORE_ENVIRONMENT": {
+      "description": "Use the Production environment on Heroku so we don't read appsettings.Development.json.",
+      "value": "Production"
+    }
+  }
+}

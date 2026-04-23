@@ -1,0 +1,3 @@
+# Placeholder so backend/wwwroot/ exists in git.
+# The Heroku build populates this folder with the built React app.
+# See /package.json `heroku-postbuild` script at the repo root.

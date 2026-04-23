@@ -52,3 +52,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Frontend build output that gets copied in by heroku-postbuild.
+# Keep only the .gitkeep so the folder exists in the repo.
+backend/wwwroot/*
+!backend/wwwroot/.gitkeep

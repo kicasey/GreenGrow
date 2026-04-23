@@ -74,7 +74,19 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseCors(DevCors);
+
+// Serve the built React app out of wwwroot. The Heroku nodejs buildpack runs
+// `npm run build` in /frontend during deploy, and our heroku-postbuild script
+// copies frontend/dist/* into backend/wwwroot/ before the dotnet publish.
+// Locally, wwwroot is empty — that's fine, the Vite dev server handles the UI.
+app.UseDefaultFiles();   // Rewrites "/" -> "/index.html"
+app.UseStaticFiles();    // Serves assets (js, css, images)
+
 app.MapControllers();
+
+// SPA fallback: any non-API, non-file request returns index.html so React
+// Router can take over (e.g., hitting /dashboard directly on a cold tab).
+app.MapFallbackToFile("index.html");
 
 // Heroku routes traffic to $PORT. Locally, let launchSettings / ASPNETCORE_URLS decide.
 string? port = Environment.GetEnvironmentVariable("PORT");
