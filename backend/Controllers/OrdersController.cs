@@ -51,6 +51,8 @@ public class OrdersController : ControllerBase
                 return BadRequest($"Product {line.ProductID} not found.");
             if (line.Quantity <= 0)
                 return BadRequest("Quantity must be greater than zero.");
+            if (prod.Quantity < line.Quantity)
+                return BadRequest($"Not enough stock for {prod.ProductName} (only {prod.Quantity} left).");
             decimal lineTotal = prod.ProductCost * line.Quantity;
             total += lineTotal;
             lines.Add(new OrderContains
@@ -59,6 +61,9 @@ public class OrdersController : ControllerBase
                 Quantity = line.Quantity,   // Teacher feedback: Quantity on CONTAINS
                 LineTotal = lineTotal,
             });
+
+            // Decrement inventory so on-hand reflects what was sold.
+            prod.Quantity -= line.Quantity;
         }
 
         var order = new Order
