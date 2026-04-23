@@ -8,5 +8,6 @@ dist/
 # TypeScript build cache
 tsconfig.tsbuildinfo
 # Belt-and-suspenders: never commit compiled JS from src/
+# (our source is .tsx; stray .js means tsc ran without -b / noEmit)
 src/**/*.js
 src/**/*.js.map

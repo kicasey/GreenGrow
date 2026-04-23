@@ -1,0 +1,11 @@
+{
+  "name": "greengrow",
+  "private": true,
+  "description": "Heroku deploy glue: builds the React frontend during release and copies the bundle into backend/wwwroot so the ASP.NET Core app serves it as static files.",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "heroku-postbuild": "cd frontend && npm ci && npm run build && mkdir -p ../backend/wwwroot && rm -rf ../backend/wwwroot/* && cp -r dist/* ../backend/wwwroot/"
+  }
+}
