@@ -17,6 +17,7 @@ const customerTiles: Tile[] = [
 
 const employeeTiles: Tile[] = [
   { to: "/dashboard", icon: "dashboard", title: "Live dashboard", blurb: "Revenue, inventory, top sellers, low stock." },
+  { to: "/reports",   icon: "chart",     title: "Reports",        blurb: "All 12 analysis queries, run live against MySQL." },
   { to: "/admin",     icon: "box",       title: "Manage catalog", blurb: "Products, categories, users, employees." },
   { to: "/orders",    icon: "receipt",   title: "All orders",     blurb: "Review every order in the system." },
 ];

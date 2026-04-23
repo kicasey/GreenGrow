@@ -68,6 +68,20 @@ export interface DashboardStats {
   }[];
 }
 
+// Shape returned by /api/reports — one entry per analysis query.
+// `rows` is a 2D array so the page can render any query generically.
+export interface ReportResult {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  sql: string;
+  columns: string[];
+  rows: (string | number | boolean | null)[][];
+  rowCount: number;
+  error: string | null;
+}
+
 export interface AuthedUser {
   kind: "user" | "employee";
   id: number;

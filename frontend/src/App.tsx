@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import CartPage from "./pages/CartPage";
 import DashboardPage from "./pages/DashboardPage";
+import ReportsPage from "./pages/ReportsPage";
 import RequireRole from "./components/RequireRole";
 import Icon from "./components/Icon";
 import { useAuth } from "./state/AuthContext";
@@ -47,6 +48,7 @@ export default function App() {
             <>
               <NavLink to="/dashboard">Dashboard</NavLink>
               <NavLink to="/orders">Orders</NavLink>
+              <NavLink to="/reports">Reports</NavLink>
               <NavLink to="/admin">Admin</NavLink>
             </>
           )}
@@ -100,6 +102,14 @@ export default function App() {
             element={
               <RequireRole role="employee">
                 <DashboardPage />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <RequireRole role="employee">
+                <ReportsPage />
               </RequireRole>
             }
           />
